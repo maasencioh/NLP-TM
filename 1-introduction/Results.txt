@@ -1,0 +1,56 @@
+DATASET	#pares	Pearson r
+word2vec dimmensions=300, vocabulary size=3000000
+looking for embeddings of target vocabulary in word2vec
+0% words processed
+5% words processed
+10% words processed
+15% words processed
+20% words processed
+25% words processed
+30% words processed
+35% words processed
+40% words processed
+45% words processed
+50% words processed
+55% words processed
+60% words processed
+65% words processed
+70% words processed
+75% words processed
+80% words processed
+85% words processed
+90% words processed
+95% words processed
+100% words processed
+
+2012.input.MSRpar.txt 	750 	0.4437
+2012.input.MSRvid.txt 	750 	0.6024
+2012.input.OnWN.txt 	750 	0.5946
+2012.input.SMTeuroparl.txt 	459 	0.4195
+2012.input.SMTnews.txt 	399 	0.5005
+2013.input.FNWN.txt 	189 	0.3919
+2013.input.headlines.txt 	750 	0.635
+2013.input.OnWN.txt 	561 	0.5789
+2013.input.SMT.txt 	750 	0.3094
+2014.input.deft-forum.txt 	450 	0.4538
+2014.input.deft-news.txt 	300 	0.6285
+2014.input.headlines.txt 	750 	0.6027
+2014.input.images.txt 	750 	0.6619
+2014.input.OnWN.txt 	750 	0.7
+2014.input.tweet-news.txt 	750 	0.6912
+2015.input.answers-forums.txt 	375 	0.6028
+2015.input.answers-students.txt 	750 	0.6072
+2015.input.belief.txt 	375 	0.7036
+2015.input.headlines.txt 	750 	0.6521
+2015.input.images.txt 	750 	0.7439
+2016.input.answer-answer.txt 	254 	0.3964
+2016.input.headlines.txt 	249 	0.5906
+2016.input.plagiarism.txt 	230 	0.7876
+2016.input.postediting.txt 	244 	0.7817
+2016.input.question-question.txt 	209 	0.5299
+Promedio ponderado todos	13294 	0.5895
+Promedio ponderado 2012 	3108 	0.5221 	Mejor en SemEval:	0.6773 UKP
+Promedio ponderado 2013 	2250 	0.4921 	Mejor en SemEval:	0.6181 UMBC
+Promedio ponderado 2014 	3750 	0.6359 	Mejor en SemEval:	0.7610 DLS@CU
+Promedio ponderado 2015 	3000 	0.6641 	Mejor en SemEval:	0.8015 DLS@CU
+Promedio ponderado 2016 	1186 	0.6158 	Mejor en SemEval:	0.7781 Samsung Poland NLP

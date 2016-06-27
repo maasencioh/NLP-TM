@@ -1,0 +1,6 @@
+Colocar en este directorio el archivo con vectores pre-entrenados
+de word2vec GoogleNews-vectors-negative300.bin
+
+Se puede descargar de la dirección:
+https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit?usp=sharing
+https://code.google.com/archive/p/word2vec/
