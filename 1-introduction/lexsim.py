@@ -322,8 +322,9 @@ def init_w2v(word2vec):
             word2vec[word]=np.array(vector)
 
         if i % 100000==0:
-            print "{0} percent words processed".format(i / 20000)
+            print "{0}% words processed".format(i / 20000)
         if i > 2000000:   #OJO AQUI SE LIMITA EL N�MERO DE PALABRAS A USAR DE WORD2VEC
+            print ''
             break
     return word2vec
 

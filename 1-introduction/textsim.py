@@ -4,6 +4,7 @@ import lexsim
 from scipy.stats.stats import pearsonr
 from nltk.corpus import stopwords
 import math
+import codecs
 
 def clean(texto):
     signos_puntuacion=".,;:'()-[]{}#$&/?!"
@@ -14,7 +15,7 @@ def clean(texto):
 def leer_dataset_textsim(nombre_archivo):
     path="./data_textsim/"
     dataset=[]
-    archivo=open(path+nombre_archivo,"r")
+    archivo = codecs.open(path+nombre_archivo, "r", "utf-8")
     for linea in archivo.readlines():
         pos_tab=linea.find("\t")
         texto1=clean(linea[:pos_tab])
@@ -111,13 +112,13 @@ if __name__ == '__main__':  # ESTE "IF" ES PARA QUE LA SIGUIENTE PARTE DEL CODIG
         columna2 = [t[1] for t in d]
         for texto1,texto2 in d:
 
+            texto1 = [i for i in texto1 if i not in stop]
+            texto2 = [i for i in texto2 if i not in stop]
+
             # EJEMPLOS
             #prediccion=STS_monge_elkan(texto1,texto2,lexsim.lex_sim_jaccard)
             #prediccion=STS_monge_elkan(texto1,texto2,lexsim.lex_sim_Jaro)
             #prediccion=STS_monge_elkan(texto1,texto2,lexsim.lex_sim_path_edit_distance) # ojo, demora much�simo
-
-            texto1 = [i for i in texto1 if i.decode('utf-8') not in stop]
-            texto2 = [i for i in texto2 if i.decode('utf-8') not in stop]
 
             prediccion = STS_monge_elkan(texto1, texto2, lexsim.lex_sim_word2vec)
 
