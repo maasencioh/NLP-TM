@@ -1,4 +1,4 @@
-# -*- coding: cp1252 -*-
+# -*- coding: utf-8 -*-
 # PARA PYTHON 2.7
 from scipy.stats.stats import pearsonr
 from scipy.spatial.distance import *
@@ -23,8 +23,8 @@ def leer_dataset(nombre_archivo):
     for linea in source_file.readlines():
         posicion_primer_tab=linea.find("\t")
         posicion_segundo_tab=linea.find("\t",posicion_primer_tab+1)
-        
-                                       
+
+
         palabra1=linea[0:posicion_primer_tab]
         palabra2=linea[posicion_primer_tab+1:posicion_segundo_tab]
         gold_standard=linea[posicion_segundo_tab+1:-1]
@@ -34,7 +34,7 @@ def leer_dataset(nombre_archivo):
     return dataset
 
 
-# función que representa una lista como una lista de n-gramas
+# funciï¿½n que representa una lista como una lista de n-gramas
 def n_grams(lista,n):
     ngrams=[]
     for i in range(len(lista)-n+1):
@@ -48,10 +48,10 @@ def n_grams_spectra(lista,n_desde,n_hasta): # ojo cuidar que n_desde<n_hasta
     return ngrams
 
 #prueba de ngramas
-#print n_grams(["El","perro","mordió","al","niño"],2)
+#print n_grams(["El","perro","mordiï¿½","al","niï¿½o"],2)
 
 #print n_grams_spectra("murcielago",2,3)
-#exit()                
+#exit()
 
 ####################################################################
 # FUNCIONES DE SIMILITUD LEXICA MORFOLOGICA
@@ -75,11 +75,29 @@ def lex_sim_cosine(palabra1,palabra2):
     B=set(palabra2)
     AuB=A.union(B)
     AiB=A.intersection(B)
-    similitud=float(len(AiB))/(len(A)*len(B)**0.5)
+    similitud=float(len(AiB))/((len(A)*len(B))**0.5)
     return similitud
 
+def lex_sim_sorensen(palabra1,palabra2):
+    A=set(palabra1)
+    B=set(palabra2)
+    AiB=A.intersection(B)
+    similitud=float(len(AiB))/(len(A)+len(B))
+    return similitud
+
+def lex_sim_sorensen_ngrams(palabra1,palabra2,n_desde=2,n_hasta=3):
+    stem1 = stemmer.stem(palabra1)
+    stem2 = stemmer.stem(palabra2)
+    A = n_grams_spectra(stem1,n_desde,n_hasta)
+    B = n_grams_spectra(stem2,n_desde,n_hasta)
+    try:
+        ans = lex_sim_sorensen(A,B)
+    except:
+        ans = 0
+    return ans
+
 def lex_sim_Jaro(word1,word2):
-        
+
     # determines the longer and shorter strings
     if len(word1)>len(word2):
         long_word=word1
@@ -118,9 +136,9 @@ def lex_sim_Jaro(word1,word2):
 
 # Edit distance
 #
-# Levenshtein VI (1966). "Binary codes capable of correcting deletions, insertions, and reversals". Soviet Physics Doklady 10: 707–10.
+# Levenshtein VI (1966). "Binary codes capable of correcting deletions, insertions, and reversals". Soviet Physics Doklady 10: 707ï¿½10.
 # (http://en.wikipedia.org/wiki/Edit_distance)
-# R.A. Wagner and M.J. Fischer. 1974. The String-to-String Correction Problem. Journal of the ACM, 21(1):168–173.
+# R.A. Wagner and M.J. Fischer. 1974. The String-to-String Correction Problem. Journal of the ACM, 21(1):168ï¿½173.
 def edit_distance(word1,word2):
     d0=range(0,len(word2)+1)
     d1=range(0,len(word2)+1)
@@ -154,7 +172,7 @@ def lex_sim_edit_distance(word1,word2):
 # FUNCIONES DE SIMILITUD BASADAS EN CONOCIMIENTO (WORDNET)
 ####################################################################
 
-# similitud basada en contar el mínimo numero de arcos entre pares de posibles conceptos(synsets)
+# similitud basada en contar el mï¿½nimo numero de arcos entre pares de posibles conceptos(synsets)
 def lex_sim_path(lemma1,lemma2):
     try:
         synsets_lemma1=wn.synsets(lemma1)
@@ -179,7 +197,7 @@ def lex_sim_lch(lemma1,lemma2):
     max_sim=0
     for synset1 in synsets_lemma1:
         for synset2 in synsets_lemma2:
-            try: 
+            try:
                 sim=synset1.lch_similarity(synset2)
             except:
                 sim=0
@@ -199,7 +217,7 @@ def lex_sim_wup(lemma1,lemma2):
     max_sim=0
     for synset1 in synsets_lemma1:
         for synset2 in synsets_lemma2:
-            try: 
+            try:
                 sim=synset1.wup_similarity(synset2)
             except:
                 sim=0
@@ -218,7 +236,7 @@ def lex_sim_res(lemma1,lemma2,information_content=brown_ic):
     max_sim=0
     for synset1 in synsets_lemma1:
         for synset2 in synsets_lemma2:
-            try: 
+            try:
                 sim=synset1.res_similarity(synset2,information_content)
             except:
                 sim=0
@@ -236,7 +254,7 @@ def lex_sim_jcn(lemma1,lemma2,information_content=brown_ic):
     max_sim=0
     for synset1 in synsets_lemma1:
         for synset2 in synsets_lemma2:
-            try: 
+            try:
                 sim=synset1.jcn_similarity(synset2,information_content)
             except:
                 sim=0
@@ -256,7 +274,7 @@ def lex_sim_lin(lemma1,lemma2,information_content=brown_ic):
     max_sim=0
     for synset1 in synsets_lemma1:
         for synset2 in synsets_lemma2:
-            try: 
+            try:
                 sim=synset1.lin_similarity(synset2,information_content)
             except:
                 sim=0
@@ -285,7 +303,7 @@ def init_w2v(word2vec):
     print "word2vec dimmensions={1}, vocabulary size={0}".format(number_of_words,dimmensions)
     i=0
     print "looking for embeddings of target vocabulary in word2vec"
-    
+
     for i in range(number_of_words):
         word=[]
         while True:
@@ -303,9 +321,9 @@ def init_w2v(word2vec):
             #if word2vec[word]==None:
             word2vec[word]=np.array(vector)
 
-        if i%50000==0:
-            print "{0} words processed so far".format(i)
-        if i>500000:   #OJO AQUI SE LIMITA EL NÚMERO DE PALABRAS A USAR DE WORD2VEC
+        if i % 100000==0:
+            print "{0} percent words processed".format(i / 20000)
+        if i > 2000000:   #OJO AQUI SE LIMITA EL Nï¿½MERO DE PALABRAS A USAR DE WORD2VEC
             break
     return word2vec
 
@@ -315,7 +333,7 @@ def lex_sim_word2vec(palabra1,palabra2):
     if len(word2vec)==0:
         init_w2v(word2vec)
     try:
-        sim=1-cosine(word2vec[palabra1],word2vec[palabra2])
+        sim = 1 - correlation(word2vec[palabra1],word2vec[palabra2])
     except:
         return 0
     if sim<=0:
@@ -323,8 +341,24 @@ def lex_sim_word2vec(palabra1,palabra2):
     return sim
 ####################################################################
 
-
-
+##########################################
+##### Resultados con 500000 muestras #####
+##########################################
+#     cosine             0.5946          #
+#     correlation        0.5945          #
+#     braycurtis         0.5851          #
+#     russellrao         0.5508          #
+#     kulsinski          0.5457          #
+#     chebyshev          0.3771          #
+#     hamming            0.1557          #
+#     jaccard            0.1557          #
+#     rogerstanimoto     0.1352          #
+#     sokalmichener      0.1352          #
+#     matching           0.0855          #
+#     dice               0.0336          #
+#     sokalsneath       -0.0153          #
+#     yule              -0.0222          #
+##########################################
 
 
 
@@ -336,7 +370,7 @@ def lex_sim_path_edit_distance(palabra1,palabra2):
     if sim==0:
         sim=lex_sim_edit_distance(palabra1,palabra2)
     return sim
-    
+
 def lex_sim_path_jaccard_23grams_porter(palabra1,palabras2):
     sim=lex_sim_path(palabra1,palabra2)
     if sim==0:
@@ -352,7 +386,7 @@ def lex_sim_path_jaccard_23grams_porter(palabra1,palabras2):
 
 
 
-    
+
 
 if __name__ == '__main__':  # ESTE "IF" ES PARA QUE LA SIGUIENTE PARTE DEL CODIGO NO SE EJECUTE CUANDO ESTE PROGRAMA SE IMPORTE EN OTRO PROGRAMA CON import lexsim
     nombres_datasets=["MC","MEN","MTURK287","MTURK771","REL122","RG","RW","SCWS","SL999","VERB143","WS353","WSR","WSS","YP130"]
@@ -368,7 +402,7 @@ if __name__ == '__main__':  # ESTE "IF" ES PARA QUE LA SIGUIENTE PARTE DEL CODIG
             stem2=stemmer.stem(palabra2)
 
 
-            # QUITAR EL # A LA LINEA DE LA FUNCION DE SIMILITUD LEXICA A USAR            
+            # QUITAR EL # A LA LINEA DE LA FUNCION DE SIMILITUD LEXICA A USAR
             #prediccion=lex_sim_cosine(stem1,stem2)
             #prediccion=lex_sim_cosine(palabra1,palabra2)
             #prediccion=lex_sim_jaccard(stem1,stem2)
@@ -388,18 +422,18 @@ if __name__ == '__main__':  # ESTE "IF" ES PARA QUE LA SIGUIENTE PARTE DEL CODIG
             #prediccion=lex_sim_jcn(palabra1,palabra2,information_content=semcor_ic)
             #prediccion=lex_sim_lin(palabra1,palabra2)
             #prediccion=lex_sim_lin(palabra1,palabra2,information_content=semcor_ic)
-            prediccion=lex_sim_path_edit_distance(palabra1,palabra2)
+            #prediccion=lex_sim_path_edit_distance(palabra1,palabra2)
             #prediccion=lex_sim_path_jaccard_23grams_porter(palabra1,palabra2)
-            #prediccion=lex_sim_word2vec(palabra1,palabra2)
+            prediccion=lex_sim_word2vec(palabra1,palabra2)
 
-
+            #prediccion=lex_sim_sorensen_ngrams(palabra1,palabra2)
 
             predicciones+=[prediccion]
             GS=dataset[(palabra1,palabra2)]
             gold_standard+=[GS]
         Pearson_r=pearsonr(gold_standard,predicciones)[0]
         suma_Pearson_r+=Pearson_r*float(len(dataset))
-        suma_numero_de_pares+=len(dataset)        
+        suma_numero_de_pares+=len(dataset)
         print nombre_dataset,"\t",len(dataset),"\t",round(Pearson_r,4)
     print "Prom.Pond.\t",suma_numero_de_pares,"\t",round(suma_Pearson_r/suma_numero_de_pares,4)
 
@@ -415,8 +449,3 @@ if __name__ == '__main__':  # ESTE "IF" ES PARA QUE LA SIGUIENTE PARTE DEL CODIG
 
 #dataset2=leer_dataset("./en/RG.txt")
 #print len(dataset2),dataset2
-
-
-
-
-

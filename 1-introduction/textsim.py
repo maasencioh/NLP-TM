@@ -1,7 +1,9 @@
-# -*- coding: cp1252 -*-
+# -*- coding: utf-8 -*-
 # PARA PYTHON 2.7
 import lexsim
 from scipy.stats.stats import pearsonr
+from nltk.corpus import stopwords
+import math
 
 def clean(texto):
     signos_puntuacion=".,;:'()-[]{}#$&/?!"
@@ -73,8 +75,21 @@ def STS_monge_elkan(texto1,texto2,lexsim):
         return 0.0
     return suma/len(texto1)
 
+def tfidf(w, Z, D):
+    s = sum([1 for v in Z if v == w])
+    tf = 1 + s if s > 0 else 0
+    idf = math.log(float(len(Z)) / (1 + sum([1 for d in D if w in d])))
+    return tf + tf * idf
 
+def weight(w, Z, D):
+    return float(tfidf(w, Z, D))/(sum([tfidf(v, Z, D)**2 for v in Z]))**0.5
 
+def N(w, Y, sim):
+    return max([sim(w,v) for v in Y])
+
+def STS_softTFIDF(texto1, texto2, lexsim, columna1, columna2):
+    close = [x for x in texto1 for y in texto2 if lexsim(x, y) > 0]
+    return sum([(weight(w, texto1, columna1) * weight(w, texto2, columna2) * N(w, texto2, lexsim)) for w in close])
 
 
 
@@ -86,18 +101,26 @@ if __name__ == '__main__':  # ESTE "IF" ES PARA QUE LA SIGUIENTE PARTE DEL CODIG
     suma_Pearson_r_year={"2012":0.0,"2013":0.0,"2014":0.0,"2015":0.0,"2016":0.0}
     suma_numero_de_pares_year={"2012":0,"2013":0,"2014":0,"2015":0,"2016":0}
     print "DATASET\t#pares\tPearson r"
+
+    stop = stopwords.words('english')
     for dataset in datasets:
         predicciones=[]
         d,gs=leer_dataset_textsim(dataset)
+
+        columna1 = [t[0] for t in d]
+        columna2 = [t[1] for t in d]
         for texto1,texto2 in d:
 
             # EJEMPLOS
             #prediccion=STS_monge_elkan(texto1,texto2,lexsim.lex_sim_jaccard)
             #prediccion=STS_monge_elkan(texto1,texto2,lexsim.lex_sim_Jaro)
-            #prediccion=STS_monge_elkan(texto1,texto2,lexsim.lex_sim_path_edit_distance) # ojo, demora muchísimo
-            prediccion=STS_monge_elkan(texto1,texto2,lexsim.lex_sim_word2vec)
-            
-            
+            #prediccion=STS_monge_elkan(texto1,texto2,lexsim.lex_sim_path_edit_distance) # ojo, demora muchï¿½simo
+
+            texto1 = [i for i in texto1 if i.decode('utf-8') not in stop]
+            texto2 = [i for i in texto2 if i.decode('utf-8') not in stop]
+
+            prediccion = STS_monge_elkan(texto1, texto2, lexsim.lex_sim_word2vec)
+
             predicciones.append(prediccion)
         Pearson_r=pearsonr(gs,predicciones)[0]
         print dataset,"\t",len(d),"\t",round(Pearson_r,4)
@@ -105,12 +128,12 @@ if __name__ == '__main__':  # ESTE "IF" ES PARA QUE LA SIGUIENTE PARTE DEL CODIG
         #actualiza el promedio ponderado de todos los datasets
         suma_Pearson_r+=Pearson_r*len(d)
         suma_numero_de_pares+=len(d)
-        #actualiza el promedio ponderado por año
+        #actualiza el promedio ponderado por aï¿½o
         for year in suma_Pearson_r_year:
             if year in dataset:
                 suma_Pearson_r_year[year]+=Pearson_r*len(d)
                 suma_numero_de_pares_year[year]+=len(d)
-         
+
 
     print "Promedio ponderado todos\t",suma_numero_de_pares,"\t",round(suma_Pearson_r/suma_numero_de_pares,4)
 
@@ -123,6 +146,3 @@ if __name__ == '__main__':  # ESTE "IF" ES PARA QUE LA SIGUIENTE PARTE DEL CODIG
         }
     for year in ["2012","2013","2014","2015","2016"]:
         print "Promedio ponderado",year,"\t",suma_numero_de_pares_year[year],"\t",round(suma_Pearson_r_year[year]/suma_numero_de_pares_year[year],4),"\tMejor en SemEval:\t",mejor_en_SemEval[year]
-
-
-    
